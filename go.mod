@@ -13,19 +13,15 @@ require (
 	github.com/emicklei/go-restful v2.8.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
-	github.com/google/gofuzz v0.0.0-20170612174753-24818f796faf // indirect
 	github.com/hashicorp/go-multierror v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.5 // indirect
 	github.com/kr/pty v1.1.8
 	github.com/kubernetes-sigs/cri-o v1.12.3
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
 	github.com/opencontainers/image-spec v1.0.1
 	github.com/opencontainers/runc v1.0.0-rc2.0.20190826210544-c61c7370f960
 	github.com/opencontainers/runtime-spec v0.1.2-0.20181111125026-1722abf79c2f
 	github.com/opencontainers/runtime-tools v0.9.0
 	github.com/opencontainers/selinux v1.3.0
-	github.com/sirupsen/logrus v1.2.0 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/sylabs/scs-library-client v0.4.4
 	github.com/sylabs/singularity v0.0.0-20190918134918-5d9975e95fa7
@@ -37,14 +33,10 @@ require (
 	google.golang.org/genproto v0.0.0-20181109154231-b5d43981345b // indirect
 	google.golang.org/grpc v1.20.0
 	gopkg.in/inf.v0 v0.9.1 // indirect
-	gopkg.in/yaml.v2 v2.2.2
-	k8s.io/api v0.0.0-20181121071145-b7bd5f2d334c // indirect
-	k8s.io/apimachinery v0.0.0-20181126123124-70adfbae261e // indirect
-	k8s.io/apiserver v0.0.0-20181121231732-e3c8fa95bba5 // indirect
-	k8s.io/client-go v0.0.0-20181010045704-56e7a63b5e38
-	k8s.io/klog v0.2.0 // indirect
+	gopkg.in/yaml.v2 v2.2.8
+	k8s.io/apiserver v0.15.10 // indirect
+	k8s.io/client-go v0.15.10
 	k8s.io/kubernetes v1.12.5
-	k8s.io/utils v0.0.0-20181115163542-0d26856f57b3 // indirect
 )
 
 replace (
