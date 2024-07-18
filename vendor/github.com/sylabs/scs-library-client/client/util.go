@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Sylabs Inc. All rights reserved.
+// Copyright (c) 2018-2022, Sylabs Inc. All rights reserved.
 // This software is licensed under a 3-clause BSD license. Please consult the
 // LICENSE.md file distributed with the sources of this project regarding your
 // rights to use or distribute this software.
@@ -55,7 +55,6 @@ func IsImageHash(refPart string) bool {
 }
 
 func ParseLibraryPath(libraryRef string) (entity string, collection string, container string, tags []string) {
-
 	libraryRef = strings.TrimPrefix(libraryRef, "library://")
 
 	refParts := strings.Split(libraryRef, "/")
@@ -73,6 +72,13 @@ func ParseLibraryPath(libraryRef string) (entity string, collection string, cont
 		entity = ""
 		collection = ""
 		container = refParts[0]
+	default:
+		// malformed libraryRef; must conform to "library://entity/collection/container[:tag[,tag]...]"
+		entity = ""
+		collection = ""
+		container = ""
+		tags = []string{}
+		return
 	}
 
 	if strings.Contains(container, ":") {
@@ -99,7 +105,6 @@ func IDInSlice(a string, list []string) bool {
 
 // SliceWithoutID returns slice with specified ID removed
 func SliceWithoutID(list []string, a string) []string {
-
 	var newList []string
 
 	for _, b := range list {
@@ -122,8 +127,9 @@ func StringInSlice(a string, list []string) bool {
 
 // PrettyPrint - Debug helper, print nice json for any interface
 func PrettyPrint(v interface{}) {
-	b, _ := json.MarshalIndent(v, "", "  ")
-	println(string(b))
+	if b, err := json.MarshalIndent(v, "", "  "); err == nil {
+		println(string(b))
+	}
 }
 
 // ImageHash returns the appropriate hash for a provided image file
@@ -139,7 +145,7 @@ func ImageHash(filePath string) (result string, err error) {
 
 	result, _, err = sha256sum(file)
 
-	return result, err
+	return "sha256." + result, err
 }
 
 // sha256sum computes the sha256sum of the specified reader; caller is
@@ -152,7 +158,7 @@ func sha256sum(r io.Reader) (result string, nBytes int64, err error) {
 		return "", 0, err
 	}
 
-	return "sha256." + hex.EncodeToString(hash.Sum(nil)), nBytes, nil
+	return hex.EncodeToString(hash.Sum(nil)), nBytes, nil
 }
 
 // md5sum computes the MD5 checksum of the specified reader; caller is
