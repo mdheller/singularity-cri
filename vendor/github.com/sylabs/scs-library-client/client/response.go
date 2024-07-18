@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Sylabs Inc. All rights reserved.
+// Copyright (c) 2018-2020, Sylabs Inc. All rights reserved.
 // This software is licensed under a 3-clause BSD license. Please consult the
 // LICENSE.md file distributed with the sources of this project regarding your
 // rights to use or distribute this software.
@@ -68,4 +68,53 @@ type UploadImage struct {
 type UploadImageResponse struct {
 	Data  UploadImage     `json:"data"`
 	Error *jsonresp.Error `json:"error,omitempty"`
+}
+
+// QuotaResponse contains quota usage and total available storage
+type QuotaResponse struct {
+	QuotaTotalBytes int64 `json:"quotaTotal"`
+	QuotaUsageBytes int64 `json:"quotaUsage"`
+}
+
+// UploadImageComplete contains data from upload image completion
+type UploadImageComplete struct {
+	Quota        QuotaResponse `json:"quota"`
+	ContainerURL string        `json:"containerUrl"`
+}
+
+// UploadImageCompleteResponse is the response to the upload image completion request
+type UploadImageCompleteResponse struct {
+	Data  UploadImageComplete `json:"data"`
+	Error *jsonresp.Error     `json:"error,omitempty"`
+}
+
+// MultipartUpload - Contains data for multipart image upload start request
+type MultipartUpload struct {
+	UploadID   string            `json:"uploadID"`
+	TotalParts int               `json:"totalParts"`
+	PartSize   int64             `json:"partSize"`
+	Options    map[string]string `json:"options"`
+}
+
+// MultipartUploadStartResponse - Response from the API for a multipart image upload start request
+type MultipartUploadStartResponse struct {
+	Data  MultipartUpload `json:"data"`
+	Error *jsonresp.Error `json:"error,omitempty"`
+}
+
+// UploadImagePart - Contains data for multipart image upload part request
+type UploadImagePart struct {
+	PresignedURL string `json:"presignedURL"`
+}
+
+// UploadImagePartResponse - Response from the API for a multipart image upload part request
+type UploadImagePartResponse struct {
+	Data  UploadImagePart `json:"data"`
+	Error *jsonresp.Error `json:"error,omitempty"`
+}
+
+// CompleteMultipartUploadResponse - Response from the API for a multipart image upload complete request
+type CompleteMultipartUploadResponse struct {
+	Data  UploadImageComplete `json:"data"`
+	Error *jsonresp.Error     `json:"error,omitempty"`
 }

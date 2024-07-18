@@ -12,17 +12,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 
 	jsonresp "github.com/sylabs/json-resp"
 )
 
-var (
-	// ErrNotFound is returned by when a resource is not found (http status 404)
-	ErrNotFound = errors.New("not found")
-)
+// ErrNotFound is returned by when a resource is not found (http status 404)
+var ErrNotFound = errors.New("not found")
 
 func (c *Client) apiGet(ctx context.Context, path string) (objJSON []byte, err error) {
 	c.Logger.Logf("apiGet calling %s", path)
@@ -73,12 +70,12 @@ func (c *Client) commonRequestHandler(ctx context.Context, method string, path s
 		return []byte{}, fmt.Errorf("error parsing url:\n\t%v", err)
 	}
 
-	req, err := c.newRequest(method, u.Path, u.RawQuery, payload)
+	req, err := c.newRequest(ctx, method, u.Path, u.RawQuery, payload)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error creating %s request:\n\t%v", method, err)
 	}
 
-	res, err := c.HTTPClient.Do(req.WithContext(ctx))
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error making request to server:\n\t%v", err)
 	}
@@ -95,7 +92,7 @@ func (c *Client) commonRequestHandler(ctx context.Context, method string, path s
 		}
 		return []byte{}, fmt.Errorf("request did not succeed: http status code: %d", res.StatusCode)
 	}
-	objJSON, err = ioutil.ReadAll(res.Body)
+	objJSON, err = io.ReadAll(res.Body)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error reading response from server:\n\t%v", err)
 	}

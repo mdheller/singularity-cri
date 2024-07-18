@@ -9,14 +9,14 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/blang/semver"
+	"github.com/blang/semver/v4"
 	jsonresp "github.com/sylabs/json-resp"
 )
 
 const (
-	pathVersion = "/version"
-	// API version that supports extended image uploadfunctionality
-	APIVersionV2Upload   = "2.0.0-alpha.1"
+	// APIVersionV2Upload supports extended image upload functionality.
+	APIVersionV2Upload = "2.0.0-alpha.1"
+	// APIVersionV2ArchTags supports extended arch tags functionality.
 	APIVersionV2ArchTags = "2.0.0-alpha.2"
 )
 
@@ -29,12 +29,12 @@ type VersionInfo struct {
 // GetVersion gets version information from the Cloud-Library Service. The context controls the lifetime of
 // the request.
 func (c *Client) GetVersion(ctx context.Context) (vi VersionInfo, err error) {
-	req, err := c.newRequest(http.MethodGet, pathVersion, "", nil)
+	req, err := c.newRequest(ctx, http.MethodGet, "version", "", nil)
 	if err != nil {
 		return VersionInfo{}, err
 	}
 
-	res, err := c.HTTPClient.Do(req.WithContext(ctx))
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return VersionInfo{}, err
 	}

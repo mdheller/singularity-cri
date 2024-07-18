@@ -6,10 +6,12 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/go-log/log"
 )
@@ -58,6 +60,14 @@ func NewClient(cfg *Config) (*Client, error) {
 	if cfg.BaseURL != "" {
 		bu = cfg.BaseURL
 	}
+
+	// If baseURL has a path component, ensure it is terminated with a separator, to prevent
+	// url.ResolveReference from stripping the final component of the path when constructing
+	// request URL.
+	if !strings.HasSuffix(bu, "/") {
+		bu += "/"
+	}
+
 	baseURL, err := url.Parse(bu)
 	if err != nil {
 		return nil, err
@@ -88,13 +98,9 @@ func NewClient(cfg *Config) (*Client, error) {
 	return c, nil
 }
 
-// newRequest initializes HTTP request and sets up headers based on configuration
-func (c *Client) newRequest(method, path, rawQuery string, body io.Reader) (*http.Request, error) {
-	u := c.BaseURL.ResolveReference(&url.URL{
-		Path:     path,
-		RawQuery: rawQuery,
-	})
-	r, err := http.NewRequest(method, u.String(), body)
+// newRequestWithURL returns a new Request given a method, url, and (optional) body.
+func (c *Client) newRequestWithURL(ctx context.Context, method, url string, body io.Reader) (*http.Request, error) {
+	r, err := http.NewRequestWithContext(ctx, method, url, body)
 	if err != nil {
 		return nil, err
 	}
@@ -106,4 +112,13 @@ func (c *Client) newRequest(method, path, rawQuery string, body io.Reader) (*htt
 	}
 
 	return r, nil
+}
+
+// newRequest returns a new Request given a method, relative path, rawQuery, and (optional) body.
+func (c *Client) newRequest(ctx context.Context, method, path, rawQuery string, body io.Reader) (*http.Request, error) {
+	u := c.BaseURL.ResolveReference(&url.URL{
+		Path:     path,
+		RawQuery: rawQuery,
+	})
+	return c.newRequestWithURL(ctx, method, u.String(), body)
 }
